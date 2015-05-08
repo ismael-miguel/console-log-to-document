@@ -13,7 +13,24 @@
 	}
 
 	var messages = [],
-		old_console_log = window.console.log,
+		times = {},
+		icons = {
+			log:'',
+			error:'<span style="background:red;border-radius:50%;display:inline-block;width:13px;height:13px;font-size:12px;text-align:center;color:#FFF;border:1px solid #000;">&times;</span> ',
+			info:'<span style="background:blue;border-radius:50%;display:inline-block;width:16px;height:16px;font-size:12px;font-weight:bold;text-align:center;color:#FFF;border:1px solid #000;">i</span> ',
+			warning:'<span style="background:orange;border-radius:50%;display:inline-block;width:16px;height:16px;font-size:12px;font-weight:bold;text-align:center;color:#000;border:1px solid #000;">!</span> ',
+			time:'<span style="background:#FFF;border-radius:50%;display:inline-block;width:16px;height:16px;font-size:11px;font-family:sans-serif;text-align:center;color:red;border:1px solid #000;">L</span> ',
+			timeEnd:'<span style="background:#FFF;border-radius:50%;display:inline-block;width:16px;height:16px;font-size:11px;font-family:sans-serif;text-align:center;color:green;border:1px solid #000;">L</span> '
+		},
+		old_console = {
+			log:window.console.log,
+			error:window.console.error,
+			info:window.console.info,
+			warning:window.console.warning,
+			time:window.console.time,
+			timeEnd:window.console.timeEnd,
+			clear:window.console.clear
+		},
 		escapeHTML = function (string)
 		{
 			return string.replace(/[&<>"'\/]/g, function (c)
@@ -132,23 +149,42 @@
 
 		},
 
-		redirect_log = window.console.log = function ()
+		logger = function (icon, args)
 		{
+			
+			if ( icon == 'time' )
+			{
+				times[ args[0] + '' ]=new Date();
+				args[0] += ': timer started';
+			}
+			else if ( icon == 'timeEnd' )
+			{
+				if( times[ args[0] + ''] )
+				{
+					args[0] += ': timer took '+ ( (new Date()) - times[ args[0] + '' ] ) +'ms';
+					delete times[ args[0] + '' ];
+				}
+				else
+				{
+					icon = 'error';
+					args[0] += ': unknown timer';
+				}
+			}
 
-			old_console_log.apply(window.console, arguments);
+			//logs into the desired function or into console.log
+			( old_console[icon] || old_console.log ).apply(window.console, window.Array.prototype.slice.call(args));
 
 			if (window.console._RELAY_TO_DOC)
 			{
+				
 				var div = window.document.createElement('div');
 
 				messages[messages.length] = div;
-				
-				args = arguments;
 
 				div.style.border = '1px solid #333';
 				div.style.background = '#666';
 				div.className = 'console-log';
-				div.innerHTML = '<span style="color:#CDCDCD;font-family:sans-serif;font-size:13px;">Console message at ' + (new Date()) + '</span><b onclick="this.parentNode.parentNode.removeChild(this.parentNode)" style="float:right;color:#CDCDCD;cursor:pointer;">&times;</b>';
+				div.innerHTML = '<span style="color:#CDCDCD;font-family:sans-serif;font-size:13px;">'+icons[icon]+'Console message at ' + (new Date()) + '</span><b onclick="this.parentNode.parentNode.removeChild(this.parentNode)" style="float:right;color:#CDCDCD;cursor:pointer;">&times;</b>';
 
 
 				for (i = 0, l = args.length; i < l; i++)
@@ -166,39 +202,40 @@
 				}
 			}
 
-		},
-		old_console_clear = window.console.clear,
-		redirect_clear = window.console.clear = function(){
-			old_console_clear.apply(window.console);
-			
-			for(var k in messages)
-			{
-				if(messages[k] && messages[k].parentNode)
-				{
-					messages[k].parentNode.removeChild(messages[k]);
-					messages[k] = null;
-				}
-			}
-			
-			messages = [];
 		};
-
-	window.console._restore_old_log = function ()
-	{
-		window.console.log = old_console_log;
+		
+	window.console.log = function(){
+		logger('log',arguments);
 	};
-	window.console._restore_redirect_log = function ()
-	{
-		window.console.log = redirect_log;
+	window.console.error = function(){
+		logger('error',arguments);
 	};
-
-	window.console._restore_old_clear = function ()
-	{
-		window.console.clear = old_console_clear;
+	window.console.info = function(){
+		logger('info',arguments);
 	};
-	window.console._restore_redirect_clear = function ()
-	{
-		window.console.log = redirect_clear;
+	window.console.warning = function(){
+		logger('warning',arguments);
+	};
+	window.console.time = function(){
+		logger('time',arguments);
+	};
+	window.console.timeEnd = function(){
+		logger('timeEnd',arguments);
+	};
+	
+	window.console.clear = function(){
+		old_console.clear.apply(window.console);
+		
+		for(var k in messages)
+		{
+			if(messages[k] && messages[k].parentNode)
+			{
+				messages[k].parentNode.removeChild(messages[k]);
+				messages[k] = null;
+			}
+		}
+		
+		messages = [];
 	};
 
 	window.addEventListener('error', function (e)
@@ -210,7 +247,7 @@
 		x.lineno = e.lineno;
 		x.colno = e.colno;
 
-		console.log(e.message, x);
+		logger('error',[e.message, x]);
 	});
 
 })(Function('return this')());
