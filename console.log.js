@@ -280,7 +280,7 @@
         if( old_console[method] && window.console[method] == old_console[method] )
 		{
 			window.console[method] = function(){
-				logger(method ,arguments);
+				logger(method, arguments);
 			};
 		}
     };
