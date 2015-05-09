@@ -1,5 +1,5 @@
-# console-log-to-document
-Provides the output of `console.log()` into the document.
+# Console log to document
+Provides the output of `console` methods into the document.
 
 ## How to use
 
@@ -83,5 +83,9 @@ All the following methods work as expected.<br>
 Also, they display an icon to identify the message type.
 
 This also catches uncaught errors and exceptions.<br>
-All credits due to the user <a href="http://meta.stackexchange.com/users/159427/canon">@canon</a> on http://meta.stackexchange.com/ for this, on <a href="http://meta.stackexchange.com/a/242491/289125">his awesome code</a><br>
+All credits due to the user <a href="http://meta.stackexchange.com/users/159427/canon">@canon</a> on http://meta.stackexchange.com/ for this functionality, on <a href="http://meta.stackexchange.com/a/242491/289125">his awesome implementation</a><br>
 He was kind enough to let me use his code!
+
+If you want, you can link directly to one of the following:
+- http://ismael-miguel.github.io/console-log-to-document/files/console.log.js (unminified)
+- http://ismael-miguel.github.io/console-log-to-document/files/console.log.min.js (minified)
