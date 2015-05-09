@@ -226,22 +226,22 @@
 		};
 		
 	window.console.log = function(){
-		logger('log',arguments);
+		logger('log', arguments);
 	};
 	window.console.error = function(){
 		logger('error',arguments);
 	};
 	window.console.info = function(){
-		logger('info',arguments);
+		logger('info', arguments);
 	};
 	window.console.warn = function(){
-		logger('warn',arguments);
+		logger('warn', arguments);
 	};
 	window.console.time = function(){
-		logger('time',arguments);
+		logger('time', arguments);
 	};
 	window.console.timeEnd = function(){
-		logger('timeEnd',arguments);
+		logger('timeEnd', arguments);
 	};
 	
 	window.console.clear = function(){
@@ -269,5 +269,20 @@
 
 		logger('error',[e.message, x]);
 	});
+    
+    console._restore_old_method = function(method){
+        if( old_console[method] )
+		{
+			window.console[method] = old_console[method];
+		}
+    };
+    console._restore_relay_method = function(method){
+        if( old_console[method] && window.console[method] == old_console[method] )
+		{
+			window.console[method] = function(){
+				logger(method ,arguments);
+			};
+		}
+    };
 
 })(Function('return this')());
