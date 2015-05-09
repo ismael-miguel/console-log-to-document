@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Console-log-to-document by ismael-miguel</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/ismael-miguel/console-log-to-document">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/ismael-miguel/console-log-to-document/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/ismael-miguel/console-log-to-document/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Console-log-to-document</h1>
+          <p>Provides the output of `console.log()` into the document.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/ismael-miguel">ismael-miguel</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a id="console-log-to-document" class="anchor" href="#console-log-to-document" aria-hidden="true"><span class="octicon octicon-link"></span></a>console-log-to-document</h1>
+
+<p>Provides the output of <code>console.log()</code> into the document.</p>
+
+<h2>
+<a id="how-to-use" class="anchor" href="#how-to-use" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use</h2>
+
+<p>This is actually really easy to use!</p>
+
+<p>1- Get either the minified/packed version or the plain version to study and change code,</p>
+
+<p>2- Include the files in your HTML pages or copy-paste the code directly into your browser's console,</p>
+
+<p>3- Add <code>console._RELAY_TO_DOC = true;</code> to your Javascript.</p>
+
+<p>4- Use the <code>console.log()</code> on the way you intended!</p>
+
+<p>5- You have finished all the steps to use the code!<br>
+   No more opening the console! (but the output is still redirected there)</p>
+
+<h2>
+<a id="advanced-usage" class="anchor" href="#advanced-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Advanced usage</h2>
+
+<p>There are a few settings that you can use to change the functionality of your code.</p>
+
+<ul>
+<li><p><code>console._RELAY_TO_DOC = true;</code> or <code>console._RELAY_TO_DOC = elem;</code><br>
+If an element is provided, the console messages will be placed in it.<br>
+If it simply is another truthy value, then the elements are added to <code>document</code>.</p></li>
+<li><p><code>console._USE_JSON = true;</code><br>
+Enables or disables a simple JSON output. Nothing fancy will be shown: just what is returned by <code>JSON.stringify()</code>.</p></li>
+<li><p><code>console._SHOW_COOL_NUMBERS = true;</code><br>
+Shows the number in binary, octal and hexadecimal.<br>
+E.g.: <code>5 (0x5, 0o5, 0b101)</code></p></li>
+<li><p><code>console._SHOW_TYPES = true;</code><br>
+Shows the datatype of a value<br>
+E.g.: <code>(number) 5</code></p></li>
+<li><p><code>console._SHOW_STRING_LENGTH = true;</code><br>
+Shows the length of a string<br>
+E.g.: <code>"Test" (length: 4)</code></p></li>
+</ul>
+
+<p>Remember, if you enable <code>console._USE_JSON = true;</code>, all the other options won't take effect. Except the 1st, obviously.<br>
+All the changes made will only be reflected on the next time you run <code>console.log()</code>.</p>
+
+<h2>
+<a id="methods" class="anchor" href="#methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Methods</h2>
+
+<p>2 Useful methods are added to the console:</p>
+
+<ul>
+<li><p><code>console._restore_old_method()</code><br>
+Restores any <code>console</code> to the value it was <strong>before</strong>  running this code.</p></li>
+<li><p><code>console._restore_relay_method()</code><br>
+Restores any <code>console</code> to the value it was <strong>after</strong>  running this code.</p></li>
+</ul>
+
+<h2>
+<a id="writting-to-the-console" class="anchor" href="#writting-to-the-console" aria-hidden="true"><span class="octicon octicon-link"></span></a>Writting to the console</h2>
+
+<p>It is really easy to write into the console:<br>
+Simply call <code>console.log()</code> and you are set!</p>
+
+<p>It has nearly-identical to the native console output.<br>
+Also, this supports formatted strings (in a very basic form):</p>
+
+<ul>
+<li>
+<code>%s</code> - Will parse the next argument as a string.</li>
+<li>
+<code>%i</code> or <code>%d</code> - Will parse the next argument as an integer.</li>
+<li>
+<code>%f</code> - Will parse the next argument as a floating-point number.</li>
+<li>
+<code>%f.&lt;size&gt;</code> - <strong>Non-standard</strong> Will parse the next argument as a floating number with <code>&lt;size&gt;</code> decimal digits.</li>
+<li>
+<code>%c</code> - <strong>Not supported</strong>
+</li>
+</ul>
+
+<p>Using <code>console.clear()</code> will delete the messages that were added to the element/document.<br>
+This is enabled by default.</p>
+
+<h2>
+<a id="implemented-console-methods" class="anchor" href="#implemented-console-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Implemented <code>console</code> methods:</h2>
+
+<ul>
+<li><code>log</code></li>
+<li><code>error</code></li>
+<li><code>warn</code></li>
+<li><code>info</code></li>
+<li><code>time</code></li>
+<li><code>timeEnd</code></li>
+<li><code>clear</code></li>
+</ul>
+
+<p>All the following methods work as expected.<br>
+Also, they display an icon to identify the message type.</p>
+
+<p>This also catches uncaught errors and exceptions.<br>
+All credits due to the user <a href="http://meta.stackexchange.com/users/159427/canon">@canon</a> on <a href="http://meta.stackexchange.com/">http://meta.stackexchange.com/</a> for this, on <a href="http://meta.stackexchange.com/a/242491/289125">his awesome code</a><br>
+He was kind enough to let me use his code!</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
