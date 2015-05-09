@@ -1,5 +1,4 @@
-(function (window, undefined)
-{
+(function(window, undefined){
 
 	window.console._RELAY_TO_DOC = false;
 	window.console._USE_JSON = false;
@@ -17,24 +16,22 @@
 		icons = {
 			log:'',
 			error:'<span style="background:red;border-radius:50%;display:inline-block;width:13px;height:13px;font-size:12px;text-align:center;color:#FFF;border:1px solid #000;">&times;</span> ',
-			info:'<span style="background:blue;border-radius:50%;display:inline-block;width:16px;height:16px;font-size:12px;font-weight:bold;text-align:center;color:#FFF;border:1px solid #000;">i</span> ',
-			warning:'<span style="background:orange;border-radius:50%;display:inline-block;width:16px;height:16px;font-size:12px;font-weight:bold;text-align:center;color:#000;border:1px solid #000;">!</span> ',
-			time:'<span style="background:#FFF;border-radius:50%;display:inline-block;width:16px;height:16px;font-size:11px;font-family:sans-serif;text-align:center;color:red;border:1px solid #000;">L</span> ',
-			timeEnd:'<span style="background:#FFF;border-radius:50%;display:inline-block;width:16px;height:16px;font-size:11px;font-family:sans-serif;text-align:center;color:green;border:1px solid #000;">L</span> '
+			info:'<span style="background:blue;border-radius:50%;display:inline-block;width:13px;height:13px;font-size:12px;font-weight:bold;text-align:center;color:#FFF;border:1px solid #000;">i</span> ',
+			warn:'<span style="background:orange;border-radius:50%;display:inline-block;width:13px;height:13px;font-size:12px;font-weight:bold;text-align:center;color:#000;border:1px solid #000;">!</span> ',
+			time:'<span style="background:#FFF;border-radius:50%;display:inline-block;width:14px;height:14px;font-size:8px;line-height:14px;font-family:sans-serif;text-align:center;color:red;border:1px solid #000;position:relative;top:-2px;">v</span> ',
+			timeEnd:'<span style="background:#FFF;border-radius:50%;display:inline-block;width:14px;height:14px;font-size:8px;line-height:14px;font-family:sans-serif;text-align:center;color:green;border:1px solid #000;position:relative;top:-2px;">v</span> '
 		},
 		old_console = {
 			log:window.console.log,
 			error:window.console.error,
 			info:window.console.info,
-			warning:window.console.warning,
+			warn:window.console.warn,
 			time:window.console.time,
 			timeEnd:window.console.timeEnd,
 			clear:window.console.clear
 		},
-		escapeHTML = function (string)
-		{
-			return string.replace(/[&<>"'\/]/g, function (c)
-			{
+		escapeHTML = function(string){
+			return string.replace(/[&<>"'\/]/g, function(c){
 				return {
 					'&': '&amp;',
 					'<': '&lt;',
@@ -45,16 +42,16 @@
 				}[c];
 			});
 		},
-		isEmpty = function (o)
-		{
+		isEmpty = function(o){
+			
 			for (var k in o)
 			{
 				return false;
 			}
 			return true;
 		},
-		format = function (string)
-		{
+		format = function(string){
+			
 			return string.replace(/%([difs])(?:\.(\d+))?/g, function (all, type, size)
 			{
 				if ((i + 1) < args.length)
@@ -85,8 +82,7 @@
 		args, i,
 		pre_style = 'border:none;background:white;color:black;margin:0;padding:3px 0px 0px 3px;font-family:monospace;word-wrap:break-word;',
 
-		generateHTML = function (args, sub, recursion)
-		{
+		generateHTML = function(args, sub, recursion){
 
 			switch (typeof args)
 			{
@@ -149,30 +145,55 @@
 
 		},
 
-		logger = function (icon, args)
-		{
+		logger = function(icon, args){
+			
+			var skip = false;
 			
 			if ( icon == 'time' )
 			{
-				times[ args[0] + '' ]=new Date();
+				if(old_console.time)
+				{
+					old_console.time.apply(window.console, [args[0]]);
+				}
+				times[ args[0] + '' ] = new Date();
 				args[0] += ': timer started';
+				skip = true;
 			}
 			else if ( icon == 'timeEnd' )
 			{
-				if( times[ args[0] + ''] )
+				var timer = args[0] + '';
+				if( times[ timer ] )
 				{
-					args[0] += ': timer took '+ ( (new Date()) - times[ args[0] + '' ] ) +'ms';
-					delete times[ args[0] + '' ];
+					if(old_console.timeEnd)
+					{
+						old_console.timeEnd.apply(window.console, [ timer ]);
+					}
+					args[0] += ': timer took ' + ( (new Date()) - times[ timer ] ) + 'ms';
+					delete times[ timer ];
+					skip = true;
 				}
 				else
 				{
 					icon = 'error';
-					args[0] += ': unknown timer';
+					args[0] += ': unknown timer (removal attempted)';
+					
+					if(old_console.timeEnd)
+					{
+						try
+						{
+							delete times[ timer ];
+							old_console.timeEnd.apply(window.console, [ timer ]);
+						}
+						catch(e){}
+					}
 				}
 			}
 
 			//logs into the desired function or into console.log
-			( old_console[icon] || old_console.log ).apply(window.console, window.Array.prototype.slice.call(args));
+			if(!skip)
+			{
+				( old_console[icon] || old_console.log ).apply(window.console, window.Array.prototype.slice.call(args));
+			}
 
 			if (window.console._RELAY_TO_DOC)
 			{
@@ -213,8 +234,8 @@
 	window.console.info = function(){
 		logger('info',arguments);
 	};
-	window.console.warning = function(){
-		logger('warning',arguments);
+	window.console.warn = function(){
+		logger('warn',arguments);
 	};
 	window.console.time = function(){
 		logger('time',arguments);
@@ -238,8 +259,7 @@
 		messages = [];
 	};
 
-	window.addEventListener('error', function (e)
-	{
+	window.addEventListener('error', function(e){
 		var x = new Error(e.message);
 
 		x.message = e.message;
