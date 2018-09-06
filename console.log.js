@@ -14,21 +14,21 @@
 	var messages = [],
 		times = {},
 		icons = {
-			log:'',
-			error:'<span style="background:red;border-radius:50%;display:inline-block;width:13px;height:13px;font-size:12px;text-align:center;color:#FFF;border:1px solid #000;">&times;</span> ',
-			info:'<span style="background:blue;border-radius:50%;display:inline-block;width:13px;height:13px;font-size:12px;font-weight:bold;text-align:center;color:#FFF;border:1px solid #000;">i</span> ',
-			warn:'<span style="background:orange;border-radius:50%;display:inline-block;width:13px;height:13px;font-size:12px;font-weight:bold;text-align:center;color:#000;border:1px solid #000;">!</span> ',
-			time:'<span style="background:#FFF;border-radius:50%;display:inline-block;width:14px;height:14px;font-size:8px;line-height:14px;font-family:sans-serif;text-align:center;color:red;border:1px solid #000;position:relative;top:-2px;">v</span> ',
-			timeEnd:'<span style="background:#FFF;border-radius:50%;display:inline-block;width:14px;height:14px;font-size:8px;line-height:14px;font-family:sans-serif;text-align:center;color:green;border:1px solid #000;position:relative;top:-2px;">v</span> '
+			log: '',
+			error: '<span style="background:red;border-radius:50%;display:inline-block;width:14px;height:14px;font-size:13px;text-align:center;color:#FFF;border:1px solid #000;line-height: 14px">&times;</span> ',
+			info: '<span style="background:blue;border-radius:50%;display:inline-block;width:13px;height:13px;font-size:12px;font-weight:bold;text-align:center;color:#FFF;border:1px solid #000;">i</span> ',
+			warn: '<span style="background:orange;border-radius:50%;display:inline-block;width:13px;height:13px;font-size:12px;font-weight:bold;text-align:center;color:#000;border:1px solid #000;">!</span> ',
+			time: '<span style="background:#FFF;border-radius:50%;display:inline-block;width:14px;height:14px;font-size:8px;line-height:14px;font-family:sans-serif;text-align:center;color:red;border:1px solid #000;position:relative;top:-2px;">v</span> ',
+			timeEnd: '<span style="background:#FFF;border-radius:50%;display:inline-block;width:14px;height:14px;font-size:8px;line-height:14px;font-family:sans-serif;text-align:center;color:green;border:1px solid #000;position:relative;top:-2px;">v</span> '
 		},
 		old_console = {
-			log:window.console.log,
-			error:window.console.error,
-			info:window.console.info,
-			warn:window.console.warn,
-			time:window.console.time,
-			timeEnd:window.console.timeEnd,
-			clear:window.console.clear
+			log: window.console.log,
+			error: window.console.error,
+			info: window.console.info,
+			warn: window.console.warn,
+			time: window.console.time,
+			timeEnd: window.console.timeEnd,
+			clear: window.console.clear
 		},
 		escapeHTML = function(string){
 			return string.replace(/[&<>"'\/]/g, function(c){
@@ -43,7 +43,6 @@
 			});
 		},
 		isEmpty = function(o){
-			
 			for (var k in o)
 			{
 				return false;
@@ -51,7 +50,6 @@
 			return true;
 		},
 		format = function(string){
-			
 			return string.replace(/%([difs])(?:\.(\d+))?/g, function (all, type, size)
 			{
 				if ((i + 1) < args.length)
@@ -127,7 +125,7 @@
 						}
 						else
 						{
-							if((typeof args[k])=='object')
+							if((typeof args[k]) === 'object')
 							{
 								html += '<pre style="' + pre_style + '"><span style="color:#F00;">' + k + '</span>: ' + (args[k]||'null').toString() + '</pre>';
 							}
@@ -149,7 +147,7 @@
 			
 			var skip = false;
 			
-			if ( icon == 'time' )
+			if ( icon === 'time' )
 			{
 				if(old_console.time)
 				{
@@ -267,7 +265,7 @@
 		x.lineno = e.lineno;
 		x.colno = e.colno;
 
-		logger('error',[e.message, x]);
+		logger('error', [e.message, x]);
 	});
     
     console._restore_old_method = function(method){
